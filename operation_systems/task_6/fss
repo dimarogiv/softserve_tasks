@@ -1,0 +1,27 @@
+#!/bin/bash
+
+HOST_IP=localhost
+HOST_PORT=3002
+
+if [[ $1 = init ]]
+then
+  if [[ -z $(echo ~/.ssh/id_*.pub) ]]
+  then
+    echo 'Error: you have no ssh keys. Please ssh-keygen one!' >&2
+    exit 1
+  fi
+  ssh -p"$HOST_PORT" -oBatchMode=yes "$HOST_IP" true
+  cat "$(ls -1 ~/.ssh/id_*.pub | head -1)" |
+    ssh -p"$HOST_PORT" -oRequestTTY=no "$HOST_IP" 'cat >> ~/.ssh/authorized_keys'
+fi
+
+if [[ $1 = send ]]
+then
+  scp -P"$HOST_PORT" -oRequestTTY=no -r "$2" "$HOST_IP":"$3"
+  ssh -p"$HOST_PORT" -oRequestTTY=no "$HOST_IP" 'chmod -R go-r *'
+fi
+
+if [[ $1 = get ]]
+then
+  scp -P"$HOST_PORT" -oRequestTTY=no -r "$HOST_IP":"$2" "$3" 
+fi

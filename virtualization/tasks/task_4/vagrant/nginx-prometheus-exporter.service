@@ -1,0 +1,10 @@
+[Unit]
+Description=Prometheus exporter for Nginx server
+
+[Service]
+Restart=always
+User=prometheus
+ExecStart=/snap/bin/nginx-prometheus-exporter --nginx.scrape-uri=http://127.0.0.1:80/stub_status
+
+[Install]
+WantedBy=multi-user.target
