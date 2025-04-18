@@ -15,9 +15,4 @@ app = Flask(__name__)
 def list_databases():
     cursor.execute("show databases")
     result = cursor.fetchall()
-    html = ""
-    debug = ""
-    for i in result:
-        debug = str(type(i))
-        #html = html + i + "<br>"
     return str(result)
